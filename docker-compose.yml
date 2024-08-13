@@ -1,0 +1,25 @@
+services:
+  python:
+    build:
+      context: ./Python
+      dockerfile: Dockerfile
+    depends_on:
+      - node
+    networks:
+      - meu_projeto_network
+
+  node:
+    build:
+      context: ./Node
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    networks:
+      - meu_projeto_network
+    environment:
+      - EMAIL_USER=${EMAIL_USER}
+      - EMAIL_PASS=${EMAIL_PASS}
+
+networks:
+  meu_projeto_network:
+    driver: bridge

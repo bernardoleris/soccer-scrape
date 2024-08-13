@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Valores de Mercado dos Jogadores</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <h1 style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">Valores de Mercado dos Jogadores</h1>
+  <canvas id="marketValueChart" width="800" height="400"></canvas>
+
+  <script>
+    async function fetchPlayersData() {
+      const response = await fetch('/dados');
+      const data = await response.json();
+
+      data.sort((a, b) => parseFloat(b['Valor de Mercado'].replace(' mil €', '').replace('.', '').replace(',', '.')) - parseFloat(a['Valor de Mercado'].replace(' mil €', '').replace('.', '').replace(',', '.')));
+
+      const playerNames = data.map(player => player['Nome do jogador']);
+      const marketValues = data.map(player => parseFloat(player['Valor de Mercado'].replace(' mil €', '').replace('.', '').replace(',', '.')));
+
+      const ctx = document.getElementById('marketValueChart').getContext('2d');
+      new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: playerNames,
+          datasets: [{
+            label: 'Valor de Mercado (mil €)',
+            data: marketValues,
+            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+            borderColor: 'rgba(75, 192, 192, 1)',
+            borderWidth: 1
+          }]
+        },
+        options: {
+          scales: {
+            y: {
+              beginAtZero: true
+            }
+          }
+        }
+      });
+    }
+
+    document.addEventListener('DOMContentLoaded', fetchPlayersData);
+  </script>
+</body>
+</html>
+
+
+
+
